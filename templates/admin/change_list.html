@@ -1,0 +1,112 @@
+{% extends "admin/change_list.html" %}
+{% load static %}
+
+{% block extrastyle %}
+{{ block.super }}
+<style>
+    /* Additional dark theme styles for list views */
+    #changelist {
+        background: transparent;
+    }
+    
+    #changelist-filter {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+    }
+    
+    #changelist-filter h2 {
+        background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+        color: white;
+        padding: 12px;
+        border-radius: 12px 12px 0 0;
+    }
+    
+    #changelist-filter h3 {
+        color: var(--text-primary);
+    }
+    
+    #changelist-filter li {
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    #changelist-filter a {
+        color: var(--text-secondary);
+    }
+    
+    #changelist-filter a:hover {
+        color: var(--primary-color);
+    }
+    
+    #changelist-filter .selected a {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+    
+    .results {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    
+    #result_list {
+        background: transparent;
+    }
+    
+    #result_list thead th {
+        background: rgba(51, 65, 85, 0.5);
+        color: var(--text-primary);
+        border-bottom: 2px solid var(--border-color);
+    }
+    
+    #result_list tbody tr {
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    #result_list tbody tr:hover {
+        background: rgba(51, 65, 85, 0.3);
+    }
+    
+    #result_list tbody td {
+        color: var(--text-secondary);
+    }
+    
+    .actions {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .actions select {
+        background: rgba(51, 65, 85, 0.8);
+        color: var(--text-primary);
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        padding: 8px;
+    }
+    
+    .paginator {
+        background: rgba(30, 41, 59, 0.6);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 15px;
+    }
+    
+    .paginator a {
+        color: var(--primary-color);
+    }
+    
+    .paginator .this-page {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+

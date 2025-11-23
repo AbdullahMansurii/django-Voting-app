@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote - {{ poll.title }}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .choice-option {
+            transition: all 0.3s ease;
+        }
+        .choice-option:hover {
+            transform: translateX(5px);
+        }
+        .choice-option input[type="checkbox"]:checked + label {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-3xl">
+        <!-- Back Button -->
+        <a href="{% url 'polls:index' %}" class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Polls
+        </a>
+
+        <!-- Poll Card -->
+        <div class="bg-white rounded-3xl p-8 shadow-2xl">
+            <div class="mb-6">
+                <span class="bg-green-100 text-green-800 px-4 py-1 rounded-full text-sm font-semibold">ACTIVE POLL</span>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ poll.title }}</h1>
+            <p class="text-xl text-gray-600 mb-8">{{ poll.question }}</p>
+
+            <!-- Voting Form -->
+            <form method="post" action="{% url 'polls:vote' poll.id %}">
+                {% csrf_token %}
+                <div class="space-y-4 mb-8">
+                    {% for choice in poll.choice_set.all %}
+                    <div class="choice-option">
+                        <input type="checkbox" 
+                               id="choice{{ choice.id }}" 
+                               name="choice" 
+                               value="{{ choice.id }}"
+                               class="hidden">
+                        <label for="choice{{ choice.id }}" 
+                               class="block p-4 rounded-xl border-2 border-gray-200 cursor-pointer font-semibold text-gray-700 hover:border-purple-400 transition-all">
+                            {{ choice.choice_text }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                        class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-4 rounded-xl font-bold text-lg hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-lg">
+                    Submit Vote
+                </button>
+            </form>
+
+            <!-- View Results Link -->
+            <div class="text-center mt-6">
+                <a href="{% url 'polls:results' poll.id %}" class="text-gray-500 hover:text-gray-700">
+                    View Results →
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add visual feedback when checkbox is selected
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const label = this.nextElementSibling;
+                if (this.checked) {
+                    label.classList.add('border-purple-600');
+                } else {
+                    label.classList.remove('border-purple-600');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
+
+

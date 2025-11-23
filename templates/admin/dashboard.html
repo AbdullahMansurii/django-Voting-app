@@ -1,0 +1,103 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Voting App Admin{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <h3>Total Polls</h3>
+            <p class="stat-value">{{ total_polls|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Active Polls</h3>
+            <p class="stat-value" style="color: #10b981;">{{ active_polls|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Past Polls</h3>
+            <p class="stat-value" style="color: #6b7280;">{{ past_polls|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Votes</h3>
+            <p class="stat-value" style="color: #f59e0b;">{{ total_votes|default:0 }}</p>
+        </div>
+        <div class="stat-card">
+            <h3>Total Choices</h3>
+            <p class="stat-value">{{ total_choices|default:0 }}</p>
+        </div>
+    </div>
+
+    <!-- Quick Action Tools -->
+    <div class="module">
+        <h2>🚀 Quick Actions</h2>
+        <div class="quick-actions">
+            <a href="{% url 'custom_admin:polls_poll_add' %}" class="action-card">
+                <div class="icon">➕</div>
+                <h3>Create New Poll</h3>
+            </a>
+            <a href="{% url 'custom_admin:polls_poll_changelist' %}" class="action-card">
+                <div class="icon">📝</div>
+                <h3>Manage Polls</h3>
+            </a>
+            <a href="{% url 'custom_admin:polls_choice_changelist' %}" class="action-card">
+                <div class="icon">⚙️</div>
+                <h3>Manage Choices</h3>
+            </a>
+            <a href="{% url 'polls:index' %}" target="_blank" class="action-card">
+                <div class="icon">🌐</div>
+                <h3>View Public Site</h3>
+            </a>
+        </div>
+    </div>
+
+    <!-- Recent Polls -->
+    {% if recent_polls %}
+    <div class="module">
+        <h2>📋 Recent Polls</h2>
+        <div style="padding: 20px;">
+            {% for poll in recent_polls %}
+            <div class="poll-item">
+                <div>
+                    <div class="poll-title">{{ poll.title }}</div>
+                    <div class="poll-meta">
+                        Created: {{ poll.created_at|date:"M d, Y" }} | 
+                        Votes: {{ poll.get_total_votes }} |
+                        <span style="color: {% if poll.is_currently_active %}#10b981{% else %}#6b7280{% endif %};">
+                            {% if poll.is_currently_active %}Active{% else %}Ended{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <a href="{% url 'custom_admin:polls_poll_change' poll.id %}" class="button" style="padding: 6px 12px; font-size: 12px; color: #ffffff !important; background: linear-gradient(135deg, #667eea, #764ba2) !important;">Edit</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Top Polls by Votes -->
+    {% if top_polls %}
+    <div class="module">
+        <h2>🏆 Top Polls by Votes</h2>
+        <div style="padding: 20px;">
+            {% for poll, vote_count in top_polls %}
+            <div class="poll-item">
+                <div>
+                    <div class="poll-title">{{ poll.title }}</div>
+                    <div class="poll-meta">
+                        {{ vote_count }} total votes | 
+                        <span style="color: {% if poll.is_currently_active %}#10b981{% else %}#6b7280{% endif %};">
+                            {% if poll.is_currently_active %}Active{% else %}Ended{% endif %}
+                        </span>
+                    </div>
+                </div>
+                <a href="{% url 'custom_admin:polls_poll_change' poll.id %}" class="button" style="padding: 6px 12px; font-size: 12px; color: #ffffff !important; background: linear-gradient(135deg, #667eea, #764ba2) !important;">View</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+

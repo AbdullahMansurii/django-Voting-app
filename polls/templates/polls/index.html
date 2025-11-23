@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting App - Online Polls</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom shiny effect for featured poll */
+        .shiny-effect {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        .shiny-effect::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent 30%,
+                rgba(255, 255, 255, 0.1) 50%,
+                transparent 70%
+            );
+            animation: shine 3s infinite;
+        }
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        .poll-card {
+            transition: all 0.3s ease;
+        }
+        .poll-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Large Heading -->
+        <div class="text-center mb-12">
+            <h1 class="text-6xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-4">
+                Online Polls & Voting
+            </h1>
+            <p class="text-xl text-gray-600">Make your voice heard. Vote on topics that matter.</p>
+        </div>
+
+        <!-- Filter Toggle -->
+        <div class="flex justify-center mb-8">
+            <div class="bg-white rounded-full p-1 shadow-lg inline-flex">
+                <a href="?filter=active" 
+                   class="px-6 py-3 rounded-full font-semibold transition-all duration-300 {% if filter_type == 'active' %}bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md{% else %}text-gray-600 hover:text-gray-800{% endif %}">
+                    Active Polls
+                </a>
+                <a href="?filter=past" 
+                   class="px-6 py-3 rounded-full font-semibold transition-all duration-300 {% if filter_type == 'past' %}bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-md{% else %}text-gray-600 hover:text-gray-800{% endif %}">
+                    Past Polls
+                </a>
+            </div>
+        </div>
+
+        <!-- Featured Active Poll (Large, with shiny effect) -->
+        {% if featured_poll and filter_type == 'active' %}
+        <div class="mb-12">
+            <div class="shiny-effect rounded-3xl p-8 text-white shadow-2xl max-w-4xl mx-auto">
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-white bg-opacity-20 px-4 py-1 rounded-full text-sm font-semibold">FEATURED POLL</span>
+                        <span class="text-white text-opacity-80">{{ featured_poll.get_total_votes }} votes</span>
+                    </div>
+                    <h2 class="text-4xl font-bold mb-4">{{ featured_poll.title }}</h2>
+                    <p class="text-xl mb-6 text-white text-opacity-90">{{ featured_poll.question }}</p>
+                    <a href="{% url 'polls:vote' featured_poll.id %}" 
+                       class="inline-block bg-white text-purple-600 px-8 py-3 rounded-full font-bold hover:bg-opacity-90 transition-all transform hover:scale-105 shadow-lg">
+                        Vote Now →
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Polls Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for poll in polls %}
+            <div class="poll-card bg-white rounded-2xl p-6 shadow-lg">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="{% if poll.is_currently_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %} px-3 py-1 rounded-full text-xs font-semibold">
+                        {% if poll.is_currently_active %}Active{% else %}Ended{% endif %}
+                    </span>
+                    <span class="text-gray-500 text-sm">{{ poll.get_total_votes }} votes</span>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">{{ poll.title }}</h3>
+                <p class="text-gray-600 mb-4 line-clamp-2">{{ poll.question }}</p>
+                <div class="flex gap-3">
+                    {% if poll.is_currently_active %}
+                    <a href="{% url 'polls:vote' poll.id %}" 
+                       class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-2 rounded-lg font-semibold hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105">
+                        Vote
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'polls:results' poll.id %}" 
+                       class="flex-1 bg-gray-100 text-gray-700 text-center py-2 rounded-lg font-semibold hover:bg-gray-200 transition-all">
+                        Results
+                    </a>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-span-full text-center py-12">
+                <p class="text-gray-500 text-xl">No {% if filter_type == 'active' %}active{% else %}past{% endif %} polls available.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
+
+

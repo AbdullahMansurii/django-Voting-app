@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results - {{ poll.title }}</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .progress-bar {
+            transition: width 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Back Button -->
+        <a href="{% url 'polls:index' %}" class="inline-flex items-center text-gray-600 hover:text-gray-800 mb-6">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Back to Polls
+        </a>
+
+        <!-- Results Card -->
+        <div class="bg-white rounded-3xl p-8 shadow-2xl">
+            <div class="mb-6">
+                <span class="{% if poll.is_currently_active %}bg-green-100 text-green-800{% else %}bg-gray-100 text-gray-800{% endif %} px-4 py-1 rounded-full text-sm font-semibold">
+                    {% if poll.is_currently_active %}ACTIVE{% else %}ENDED{% endif %}
+                </span>
+            </div>
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">{{ poll.title }}</h1>
+            <p class="text-xl text-gray-600 mb-2">{{ poll.question }}</p>
+            <p class="text-gray-500 mb-8">Total Votes: <span class="font-bold text-purple-600">{{ poll.get_total_votes }}</span></p>
+
+            <!-- Results List -->
+            <div class="space-y-6">
+                {% for choice in choices %}
+                <div class="result-item">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-semibold text-gray-800 text-lg">{{ choice.choice_text }}</span>
+                        <span class="text-gray-600 font-bold">{{ choice.votes }} votes ({{ choice.get_percentage }}%)</span>
+                    </div>
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-200 rounded-full h-4 overflow-hidden">
+                        <div class="progress-bar h-4 rounded-full bg-gradient-to-r from-purple-600 to-pink-600" 
+                             style="width: {{ choice.get_percentage }}%">
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mt-8 flex gap-4">
+                {% if poll.is_currently_active %}
+                <a href="{% url 'polls:vote' poll.id %}" 
+                   class="flex-1 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-center py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-lg">
+                    Vote Again
+                </a>
+                {% endif %}
+                <a href="{% url 'polls:index' %}" 
+                   class="flex-1 bg-gray-100 text-gray-700 text-center py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all">
+                    View All Polls
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
+
