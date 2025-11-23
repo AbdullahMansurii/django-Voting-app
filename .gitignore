@@ -47,6 +47,7 @@ db.sqlite3-journal
 .env
 .env.local
 .env.*.local
+.env.production
 
 # Coverage reports
 htmlcov/

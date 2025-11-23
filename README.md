@@ -30,6 +30,15 @@ A modern, feature-rich online polling and voting web application built with Djan
 - Python 3.8 or higher
 - pip (Python package manager)
 
+### 🚀 Quick Deploy to Production
+
+Want to deploy this app live? Check out **[DEPLOYMENT.md](DEPLOYMENT.md)** for step-by-step guides to deploy on:
+- **Railway** (Recommended - Easiest)
+- **Render** (Free tier available)
+- **PythonAnywhere** (Beginner friendly)
+
+Your app will be live in minutes! 🎉
+
 ### Installation
 
 1. **Clone the repository**
